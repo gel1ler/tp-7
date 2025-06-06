@@ -70,7 +70,3 @@ public class StudentController {
         return ResponseEntity.ok().build();
     }
 }
-
-git add .
-git commit -m "fix"
-git push
