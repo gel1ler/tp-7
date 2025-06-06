@@ -4,7 +4,7 @@ databaseChangeLog:
       author: yourname
       changes:
         - createTable:
-            tableName: player
+            tableName: students
             columns:
               - column:
                   name: id
@@ -13,10 +13,18 @@ databaseChangeLog:
                     primaryKey: true
                     nullable: false
               - column:
-                  name: username
+                  name: firstName
                   type: VARCHAR(255)
                   constraints:
                     nullable: false
               - column:
-                  name: email
+                  name: lastName
                   type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: tokens
+                  type: INTEGER
+              - column:
+                  name: role
+                  type: VARCHAR(255)  # или ENUM, если поддерживается
