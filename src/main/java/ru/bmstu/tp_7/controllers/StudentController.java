@@ -3,100 +3,74 @@ package ru.bmstu.tp_7.controllers;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import ru.bmstu.tp_7.model.Student;
-import ru.bmstu.tp_7.model.UserRole;
 import ru.bmstu.tp_7.service.StudentService;
 
+import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1/students")
+@RequestMapping("/api/v2/students")
 public class StudentController {
+
     private final StudentService studentService;
 
-//    public StudentController(StudentService studentService) {
-//        this.studentService = studentService;
-//    }
-
-    @Operation(
-            summary = "Получить всех студентов",
-            description = "Возвращает список всех студентов",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "Список студентов",
-                            content = {}
-                    )
-            }
-    )
-    @GetMapping("/")
+    @Operation(summary = "Получить всех студентов", responses = {
+            @ApiResponse(responseCode = "200", description = "Список студентов")
+    })
+    @GetMapping
     public ResponseEntity<List<Student>> getAllStudents() {
         return ResponseEntity.ok(studentService.getAllStudents());
     }
 
-    @Operation(
-            summary = "Получить студента по ID",
-            description = "Возвращает студента по ID",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "Студент",
-                            content = {}
-                    )
-            }
-    )
+    @Operation(summary = "Получить студента по ID", responses = {
+            @ApiResponse(responseCode = "200", description = "Студент найден"),
+            @ApiResponse(responseCode = "404", description = "Студент не найден")
+    })
     @GetMapping("/{id}")
-    public ResponseEntity<?> getStudentById(@PathVariable("id") Long id) {
-        Optional<Student> student = studentService.getById(id);
-
-        if (student.isPresent()) {
-            return ResponseEntity.ok(student.get());
-        } else {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<Student> getStudentById(@PathVariable("id") Long id) {
+        Student student = studentService.getStudentById(id);
+        if (student == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-    }
-
-
-    @Operation(
-            summary = "Добавить студента",
-            description = "Добавляет студента",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "Добавлено",
-                            content = {}
-                    )
-            }
-    )
-    @PostMapping("/add")
-    public ResponseEntity<Student> addStudent(
-            @RequestBody Student student,
-            @RequestHeader("X-User-Role") UserRole userRole) {
-
-        studentService.addStudent(student);
         return ResponseEntity.ok(student);
     }
 
-    @PatchMapping("/{id}/tokens")
-    public ResponseEntity<Void> updateTokens(
-            @PathVariable("id") Long id,
-            @RequestParam("change") int change,
-            @RequestHeader("X-User-Role") UserRole userRole) {
+    @Operation(summary = "Добавить нового студента", responses = {
+            @ApiResponse(responseCode = "201", description = "Студент успешно добавлен")
+    })
+    @PostMapping
+    public ResponseEntity<Student> addStudent(@RequestBody Student student) {
+        Student saved = studentService.addStudent(student);
+        return ResponseEntity
+                .created(URI.create("/api/v2/students/" + saved.getId()))
+                .body(saved);
+    }
 
+    @Operation(summary = "Обновить токены студента", responses = {
+            @ApiResponse(responseCode = "200", description = "Токены обновлены")
+    })
+    @PatchMapping("/{id}/tokens")
+    public ResponseEntity<Void> updateTokens(@PathVariable("id") Long id, @RequestParam("change") int change) {
         studentService.updateTokens(id, change);
         return ResponseEntity.ok().build();
     }
 
+    @Operation(summary = "Удалить студента", responses = {
+            @ApiResponse(responseCode = "200", description = "Студент удален")
+    })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> expelStudent(
-            @PathVariable("id") Long id,
-            @RequestHeader("X-User-Role") UserRole userRole) {
-
+    public ResponseEntity<Void> deleteStudent(@PathVariable("id") Long id) {
         studentService.expelStudent(id);
         return ResponseEntity.ok().build();
     }
 }
+
+git add .
+git commit -m "fix"
+git push
