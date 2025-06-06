@@ -3,7 +3,7 @@ package ru.bmstu.tp_7.repository.impl;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
-import ru.bmstu.repository.JournalService;
+import ru.bmstu.tp_7.repository.JournalService;
 
 import java.io.IOException;
 import java.nio.file.Files;

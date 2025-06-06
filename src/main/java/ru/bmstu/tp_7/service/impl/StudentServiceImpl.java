@@ -1,64 +1,46 @@
 package ru.bmstu.tp_7.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import ru.bmstu.tp_7.dto.StudentDTO;
+import org.springframework.web.server.ResponseStatusException;
 import ru.bmstu.tp_7.model.Student;
-import ru.bmstu.tp_7.model.UserRole;
-import ru.bmstu.tp_7.facade.StudentFacade;
 import ru.bmstu.tp_7.repository.StudentRepository;
+import ru.bmstu.tp_7.service.StudentService;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
-@Transactional
-public class StudentService {
+@RequiredArgsConstructor
+public class StudentServiceImpl implements StudentService {
+
     private final StudentRepository studentRepository;
-    private final StudentFacade studentFacade;
 
-    @Autowired
-    public StudentService(StudentRepository studentRepository, StudentFacade studentFacade) {
-        this.studentRepository = studentRepository;
-        this.studentFacade = studentFacade;
+    @Override
+    public List<Student> getAllStudents() {
+        return studentRepository.findAll();
     }
 
-    @Transactional(readOnly = true)
-    public List<StudentDTO> getAllStudents() {
-        return studentRepository.findAll().stream()
-                .map(studentFacade::toDTO)
-                .collect(Collectors.toList());
+    @Override
+    public Student getStudentById(Long id) {
+        return studentRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
-    @Transactional(readOnly = true)
-    public StudentDTO getStudentById(Long id) {
-        return studentFacade.toDTO(studentRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Student not found")));
+    @Override
+    public Student addStudent(Student student) {
+        return studentRepository.save(student);
     }
 
-    public StudentDTO addStudent(String firstName, String lastName, int tokens) {
-        Student student = new Student();
-        student.setFirstName(firstName);
-        student.setLastName(lastName);
-        student.setTokens(tokens);
-        student.setRole(UserRole.STUDENT);
-        return studentFacade.toDTO(studentRepository.save(student));
+    @Override
+    public Student updateTokens(Long id, int change) {
+        Student student = getStudentById(id);
+        student.setTokens(student.getTokens() + change);
+        return studentRepository.save(student);
     }
 
-    public StudentDTO updateTokens(Long id, int delta) {
-        Student student = studentRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Student not found"));
-
-        if (student.getTokens() + delta < 0) {
-            throw new RuntimeException("Tokens cannot be negative");
-        }
-
-        student.setTokens(student.getTokens() + delta);
-        return studentFacade.toDTO(studentRepository.save(student));
-    }
-
-    public void expelStudent(StudentDTO studentDTO) {
-        studentRepository.deleteById(studentDTO.getId());
+    @Override
+    public void expelStudent(Long id) {
+        studentRepository.deleteById(id);
     }
 }

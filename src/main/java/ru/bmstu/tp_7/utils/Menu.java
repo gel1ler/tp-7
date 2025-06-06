@@ -1,6 +1,6 @@
 package ru.bmstu.tp_7.utils;
 
-import ru.bmstu.model.Student;
+import ru.bmstu.tp_7.model.Student;
 
 import java.util.List;
 

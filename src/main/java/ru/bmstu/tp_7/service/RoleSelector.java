@@ -1,10 +1,10 @@
 package ru.bmstu.tp_7.service;
 
-import ru.bmstu.model.UserRole;
+import ru.bmstu.tp_7.model.UserRole;
 
-import static ru.bmstu.utils.InputHandler.getStringInput;
-import static ru.bmstu.utils.Menu.print;
-import static ru.bmstu.utils.Menu.println;
+import static ru.bmstu.tp_7.utils.InputHandler.getStringInput;
+import static ru.bmstu.tp_7.utils.Menu.print;
+import static ru.bmstu.tp_7.utils.Menu.println;
 
 public class RoleSelector {
     public static UserRole selectRole() {

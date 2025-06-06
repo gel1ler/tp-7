@@ -5,10 +5,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.bmstu.aspect.RoleCheckAspect;
-import ru.bmstu.model.Student;
-import ru.bmstu.model.UserRole;
-import ru.bmstu.service.StudentService;
+import ru.bmstu.tp_7.model.Student;
+import ru.bmstu.tp_7.model.UserRole;
+import ru.bmstu.tp_7.service.StudentService;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,7 +17,6 @@ import java.util.Optional;
 @RequestMapping("/api/v1/students")
 public class StudentController {
     private final StudentService studentService;
-    private final RoleCheckAspect roleCheckAspect;
 
 //    public StudentController(StudentService studentService) {
 //        this.studentService = studentService;
@@ -78,7 +76,6 @@ public class StudentController {
     public ResponseEntity<Student> addStudent(
             @RequestBody Student student,
             @RequestHeader("X-User-Role") UserRole userRole) {
-        roleCheckAspect.setCurrentUserRole(userRole);
 
         studentService.addStudent(student);
         return ResponseEntity.ok(student);
@@ -89,7 +86,6 @@ public class StudentController {
             @PathVariable("id") Long id,
             @RequestParam("change") int change,
             @RequestHeader("X-User-Role") UserRole userRole) {
-        roleCheckAspect.setCurrentUserRole(userRole);
 
         studentService.updateTokens(id, change);
         return ResponseEntity.ok().build();
@@ -99,7 +95,6 @@ public class StudentController {
     public ResponseEntity<Void> expelStudent(
             @PathVariable("id") Long id,
             @RequestHeader("X-User-Role") UserRole userRole) {
-        roleCheckAspect.setCurrentUserRole(userRole);
 
         studentService.expelStudent(id);
         return ResponseEntity.ok().build();

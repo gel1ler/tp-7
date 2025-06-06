@@ -17,7 +17,7 @@ public class Student {
 
     private String firstName;
     private String lastName;
-    private int tokens;
+    private Integer tokens;
 
     @Enumerated(EnumType.STRING)
     private UserRole role;
