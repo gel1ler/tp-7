@@ -15,7 +15,10 @@ public class Student {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "firstname") // явное имя колонки
     private String firstName;
+
+    @Column(name = "lastname")  // явное имя колонки
     private String lastName;
     private Integer tokens;
 

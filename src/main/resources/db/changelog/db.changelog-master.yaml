@@ -8,17 +8,17 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: BIGINT
+                  type: BIGSERIAL
                   constraints:
                     primaryKey: true
                     nullable: false
               - column:
-                  name: firstName
+                  name: firstname
                   type: VARCHAR(255)
                   constraints:
                     nullable: false
               - column:
-                  name: lastName
+                  name: lastname
                   type: VARCHAR(255)
                   constraints:
                     nullable: false

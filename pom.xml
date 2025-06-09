@@ -60,7 +60,6 @@
 		</dependency>
 
 
-
 		<!-- JWT -->
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
